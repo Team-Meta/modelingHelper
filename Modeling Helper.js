@@ -5,9 +5,10 @@
  */
 var startPoint = 0,
     part, Type, Sqaure = 1;
-const Color = android.graphics.Color;
-const WHITE = Color.WHITE;
-const ctx = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
+var Color = android.graphics.Color,
+    WHITE = Color.WHITE,
+    ctx = com.mojang.minecraftpe.MainActivity.currentMainActivity.get(),
+    density = ctx.getResources().getDisplayMetrics().density;
 
 /**
  * Model
@@ -45,7 +46,7 @@ Model.setModel2Player = function() {
 Model.set = function(name, arr) { //Block Data -> Text
     var returnString = "";
     for (var i = 0; i < arr.length; i++) {
-        returnString += "var " + name + "_" + i + " = model.getPart(\"" + part + "\")\n " + name + "_" + i + ".addBox(" + arr[i][0] * Sqaure * Model.xDir + ", " + arr[i][1] * Sqaure * Model.yDir + ", " + arr[i][2] * Sqaure * Model.zDir + ", " + 1 * Sqaure + ", " + 1 * Sqaure + ", " + 1 * Sqaure + ");\n";
+        returnString += "var " + name + "_" + i + " = model.getPart(\"" + part + "\");\n " + name + "_" + i + ".addBox(" + arr[i][0] * Sqaure * Model.xDir + ", " + arr[i][1] * Sqaure * Model.yDir + ", " + arr[i][2] * Sqaure * Model.zDir + ", " + 1 * Sqaure + ", " + 1 * Sqaure + ", " + 1 * Sqaure + ");\n";
     }
     returnString += "}"; //중괄호 맺음
     ModelDialog(returnString);
@@ -144,15 +145,20 @@ function useItem(x, y, z, i, b) {
     }
 }
 
+function dp(pixel) {
+    return Math.ceil(pixel * density);
+}
+
 function TypeDialog(Arr) {
     ctx.runOnUiThread(new java.lang.Runnable({
         run: function() {
             try {
-                var adb = new android.app.AlertDialog.Builder(ctx, android.app.AlertDialog.THEME_HOLO_DARK);
+                var adb = new android.app.AlertDialog.Builder(ctx, android.app.AlertDialog.THEME_DEVICE_DEFAULT_DARK);
                 adb.setTitle("Setting");
 
                 var L = new android.widget.LinearLayout(ctx);
                 L.setOrientation(1);
+                L.setPadding(dp(4), dp(4), dp(4), dp(4));
 
                 var bodyPart = ["head", "body", "leftarm", "rightarm", "leftleg", "rightleg"];
 
@@ -168,8 +174,8 @@ function TypeDialog(Arr) {
                 Bs.setTextColor(WHITE);
                 L.addView(Bs);
 
-                spinner = new android.widget.Spinner(ctx);
-                adapter = new android.widget.ArrayAdapter(ctx, android.R.layout.simple_spinner_item, bodyPart);
+                var spinner = new android.widget.Spinner(ctx);
+                var adapter = new android.widget.ArrayAdapter(ctx, android.R.layout.simple_list_item_1, bodyPart);
                 spinner.setAdapter(adapter);
                 spinner.setOnItemSelectedListener(new android.widget.AdapterView.OnItemSelectedListener({
                     onItemSelected: function(Parent, View, Position) {
@@ -199,7 +205,7 @@ function ModelDialog(text) {
         run: function() {
             try {
 
-                var adb = new android.app.AlertDialog.Builder(ctx, android.app.AlertDialog.THEME_HOLO_DARK);
+                var adb = new android.app.AlertDialog.Builder(ctx, android.app.AlertDialog.THEME_DEVICE_DEFAULT_DARK);
                 adb.setTitle("Model Source");
 
                 editText = new android.widget.EditText(ctx);
