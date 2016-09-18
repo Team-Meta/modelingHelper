@@ -15,8 +15,8 @@ const ctx = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
 var Model = {};
 Model.save = null;
 Model.xDir = 1,
-    Model.yDir = -1,
-    Model.zDir = -1;
+Model.yDir = -1,
+Model.zDir = -1;
 Model.Sx = 0;
 Model.Sy = 0;
 Model.Sz = 0;
@@ -41,14 +41,14 @@ Model.setModel2Player = function() {
  * 블랙배열을 텍스트로 변환합니다.
  * @since 2016.9.17
  */
-Model.set = function(name, Arr) { //Block Data -> Text
+Model.set = function(name, arr) { //Block Data -> Text
     var returnString = "";
-    for (var i in Arr) {
-        returnString += "var " + name + "_" + i + " = model.getPart(\"" + part + "\")\n " + name + "_" + i + ".addBox(" + Arr[i][0] * Sqaure * Model.xDir + ", " + Arr[i][1] * Sqaure * Model.yDir + ", " + Arr[i][2] * Sqaure * Model.zDir + ", " + 1 * Sqaure + ", " + 1 * Sqaure + ", " + 1 * Sqaure + ")\n"
+    for (var i = 0; i < arr.length; i++) {
+        returnString += "var " + name + "_" + i + " = model.getPart(\"" + part + "\")\n " + name + "_" + i + ".addBox(" + arr[i][0] * Sqaure * Model.xDir + ", " + arr[i][1] * Sqaure * Model.yDir + ", " + arr[i][2] * Sqaure * Model.zDir + ", " + 1 * Sqaure + ", " + 1 * Sqaure + ", " + 1 * Sqaure + ");\n";
     }
-    Md += "}" //중괄호 맺음
+    returnString += "}"; //중괄호 맺음
     ModelDialog(returnString);
-    Model.save = Arr;
+    Model.save = arr;
     Model.setModel2Player();
 };
 
@@ -87,9 +87,9 @@ Model.get = function() {
     for (var X = Model.Sx; X <= Model.Ex; X++)
         for (var Y = Model.Sy; Y <= Model.Ey; Y++)
             for (var Z = Model.Sz; Z <= Model.Ez; Z++) {
-                var Tile = Level.getTile(X, Y, Z)
-                if (Tile != 0) {
-                    var data = [X - Model.Rx, Y - Model.Ry, Z - Model.Rz, Tile]
+                var tile = Level.getTile(X, Y, Z);
+                if (tile != 0) {
+                    var data = [X - Model.Rx, Y - Model.Ry, Z - Model.Rz, tile];
                     str.push(data);
                 }
             }
@@ -97,7 +97,6 @@ Model.get = function() {
 };
 
 Model.entityRender = Renderer.createHumanoidRenderer();
-Model.makeModel(Model.entityRender);
 Model.makeModel = function(renderer) {
     var model = renderer.getModel();
     var head = model.getPart("head");
@@ -112,11 +111,12 @@ Model.makeModel = function(renderer) {
     leftleg.clear();
     var rightleg = model.getPart("rightLeg");
     rightleg.clear();
-    for (var i in Save) {
+    for (var i in Model.save) {
         var block = model.getPart("body");
-        block.addBox(Save[i][0] * Sqaure * Model.xDir, Save[i][1] * Sqaure * Model.yDir, Save[i][2] * Sqaure * Model.zDir, 1 * Sqaure, 1 * Sqaure, 1 * Sqaure)
+        block.addBox(Model.save[i][0] * Sqaure * Model.xDir, Model.save[i][1] * Sqaure * Model.yDir, Model.save[i][2] * Sqaure * Model.zDir, 1 * Sqaure, 1 * Sqaure, 1 * Sqaure)
     }
 };
+Model.makeModel(Model.entityRender);
 
 function useItem(x, y, z, i, b) {
     if (i == 267) {
@@ -125,19 +125,19 @@ function useItem(x, y, z, i, b) {
             Model.Sy = y;
             Model.Sz = z;
             startPoint = 1;
-            clientMessage("First Point Checked " + x + "/" + y + "/" + z)
+            clientMessage("First Point Checked " + x + "/" + y + "/" + z);
         } else if (startPoint == 1) {
             Model.Ex = x;
             Model.Ey = y;
             Model.Ez = z;
             startPoint = 2;
-            clientMessage("Second Point Checked " + x + "/" + y + "/" + z)
+            clientMessage("Second Point Checked " + x + "/" + y + "/" + z);
         } else if (startPoint == 2) {
             Model.Rx = x;
             Model.Ry = y;
             Model.Rz = z;
             startPoint = 0;
-            clientMessage("Rotation Point Checked " + x + "/" + y + "/" + z)
+            clientMessage("Rotation Point Checked " + x + "/" + y + "/" + z);
             TypeDialog(Model.get());
         }
     }
@@ -153,37 +153,36 @@ function TypeDialog(Arr) {
                 var L = new android.widget.LinearLayout(ctx);
                 L.setOrientation(1);
 
-                var bodyPart = ["head", "body", "leftarm", "rightarm", "leftleg", "rightleg"]
+                var bodyPart = ["head", "body", "leftarm", "rightarm", "leftleg", "rightleg"];
 
                 editText = new android.widget.EditText(ctx);
-                editText.setHint("type");
-                L.addView(editText)
+                editText.setHint("variableName");
+                editText.setText("block");
+                L.addView(editText);
 
                 Bs = new android.widget.EditText(ctx);
                 Bs.setHint("확대율[x1]");
-                Bs.setText("1")
-                L.addView(Bs)
+                Bs.setText("1");
+                L.addView(Bs);
 
-                spinner = new android.widget.Spinner(ctx)
-                adapter = new android.widget.ArrayAdapter(ctx, android.R.layout.simple_spinner_item, bodyPart)
-                spinner.setAdapter(adapter)
+                spinner = new android.widget.Spinner(ctx);
+                adapter = new android.widget.ArrayAdapter(ctx, android.R.layout.simple_spinner_item, bodyPart);
+                spinner.setAdapter(adapter);
                 spinner.setOnItemSelectedListener(new android.widget.AdapterView.OnItemSelectedListener({
                     onItemSelected: function(Parent, View, Position) {
-
                         part = bodyPart[Position];
-
                     }
                 }))
-                L.addView(spinner)
+                L.addView(spinner);
 
                 adb.setView(L);
 
                 adb.setPositiveButton("확인", new android.content.DialogInterface.OnClickListener({
                     onClick: function(d, w) {
 
-                        Type = editText.getText().tostring();
-                        Sqaure = Bs.getText().tostring();
-                        Model.set(Type, Arr)
+                        Type = editText.getText().toString();
+                        Sqaure = Bs.getText().toString();
+                        Model.set(Type, Arr);
 
                     }
                 }));
@@ -220,13 +219,13 @@ function ModelDialog(text) {
     }));
 }
 
-function Rend(ent) {
+function Rendering(ent) {
     Entity.setRenderType(ent, Model.entityRender.renderType);
 }
 
 function modTick() {
     if (Model.check) {
-        Rend(Player.getEntity());
+        Rendering(Player.getEntity());
     }
 }
 
