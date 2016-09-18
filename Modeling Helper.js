@@ -5,7 +5,8 @@
  */
 var startPoint = 0,
     part, Type, Sqaure = 1;
-
+const Color = android.graphics.Color;
+const WHITE = Color.WHITE;
 const ctx = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
 
 /**
@@ -158,11 +159,13 @@ function TypeDialog(Arr) {
                 editText = new android.widget.EditText(ctx);
                 editText.setHint("variableName");
                 editText.setText("block");
+                editText.setTextColor(WHITE);
                 L.addView(editText);
 
                 Bs = new android.widget.EditText(ctx);
                 Bs.setHint("확대율[x1]");
                 Bs.setText("1");
+                Bs.setTextColor(WHITE);
                 L.addView(Bs);
 
                 spinner = new android.widget.Spinner(ctx);
@@ -179,11 +182,8 @@ function TypeDialog(Arr) {
 
                 adb.setPositiveButton("확인", new android.content.DialogInterface.OnClickListener({
                     onClick: function(d, w) {
-
-                        Type = editText.getText().toString();
                         Sqaure = Bs.getText().toString();
-                        Model.set(Type, Arr);
-
+                        Model.set(editText.getText().toString(), Arr);
                     }
                 }));
                 adb.show();
@@ -204,6 +204,7 @@ function ModelDialog(text) {
 
                 editText = new android.widget.EditText(ctx);
                 editText.setText(text);
+                editText.setTextColor(WHITE);
                 adb.setView(editText);
 
                 adb.setPositiveButton("확인", new android.content.DialogInterface.OnClickListener({
