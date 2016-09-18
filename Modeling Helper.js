@@ -17,8 +17,8 @@ var Color = android.graphics.Color,
 var Model = {};
 Model.save = null;
 Model.xDir = 1,
-Model.yDir = -1,
-Model.zDir = -1;
+    Model.yDir = -1,
+    Model.zDir = -1;
 Model.Sx = 0;
 Model.Sy = 0;
 Model.Sz = 0;
@@ -29,6 +29,7 @@ Model.Rx = 0;
 Model.Ry = 0;
 Model.Rz = 0;
 Model.check = false;
+Model.isChecked = false;
 
 /**
  * 모델을 플레이어에게 적용합니다
@@ -43,10 +44,17 @@ Model.setModel2Player = function() {
  * 블랙배열을 텍스트로 변환합니다.
  * @since 2016.9.17
  */
-Model.set = function(name, arr) { //Block Data -> Text
+Model.set = function(arr, name, magnification, isChecked) { //Block Data -> Text
     var returnString = "";
     for (var i = 0; i < arr.length; i++) {
-        returnString += "var " + name + "_" + i + " = model.getPart(\"" + part + "\");\n " + name + "_" + i + ".addBox(" + arr[i][0] * Sqaure * Model.xDir + ", " + arr[i][1] * Sqaure * Model.yDir + ", " + arr[i][2] * Sqaure * Model.zDir + ", " + 1 * Sqaure + ", " + 1 * Sqaure + ", " + 1 * Sqaure + ");\n";
+        if (isChecked) {
+            if (Model.firstSx != arr[i][0] && Model.firstSy != arr[i][1] && Model.firstSz != arr[i][2])
+                returnString += "var " + name + "_" + i + " = model.getPart(\"" + part + "\");\n " + name + "_" + i + ".addBox(" + arr[i][0] * magnification * Model.xDir + ", " + arr[i][1] * magnification * Model.yDir + ", " + arr[i][2] * magnification * Model.zDir + ", " + 1 * magnification + ", " + 1 * magnification + ", " + 1 * magnification + ");\n";
+            if (Model.firstEx != arr[i][0] && Model.firstEy != arr[i][1] && Model.firstEz != arr[i][2])
+                returnString += "var " + name + "_" + i + " = model.getPart(\"" + part + "\");\n " + name + "_" + i + ".addBox(" + arr[i][0] * magnification * Model.xDir + ", " + arr[i][1] * magnification * Model.yDir + ", " + arr[i][2] * magnification * Model.zDir + ", " + 1 * magnification + ", " + 1 * magnification + ", " + 1 * magnification + ");\n";
+        } else {
+            returnString += "var " + name + "_" + i + " = model.getPart(\"" + part + "\");\n " + name + "_" + i + ".addBox(" + arr[i][0] * magnification * Model.xDir + ", " + arr[i][1] * magnification * Model.yDir + ", " + arr[i][2] * magnification * Model.zDir + ", " + 1 * magnification + ", " + 1 * magnification + ", " + 1 * magnification + ");\n";
+        }
     }
     returnString += "}"; //중괄호 맺음
     ModelDialog(returnString);
@@ -59,23 +67,23 @@ Model.set = function(name, arr) { //Block Data -> Text
  * @since 2016.9.17
  */
 Model.rearray = function() {
-    var Bx = Model.Sx,
-        By = Model.Sy,
-        Bz = Model.Sz,
-        Kx = Model.Ex,
-        Ky = Model.Ey,
-        Kz = Model.Ez;
+    Model.firstSx = Model.Sx,
+        Model.firstSy = Model.Sy,
+        Model.firstSz = Model.Sz,
+        Model.firstEx = Model.Ex,
+        Model.firstEy = Model.Ey,
+        Model.firstEz = Model.Ez;
     if (Model.Sx > Model.Ex) {
-        Model.Ex = Bx;
-        Model.Sx = Kx;
+        Model.Ex = Model.firstSx;
+        Model.Sx = Model.firstEx;
     }
     if (Model.Sy > Model.Ey) {
-        Model.Ey = By;
-        Model.Sy = Ky;
+        Model.Ey = Model.firstSy;
+        Model.Sy = Model.firstEy;
     }
     if (Model.Sz > Model.Ez) {
-        Model.Ez = Bz;
-        Model.Sz = Kz;
+        Model.Ez = Model.firstSz;
+        Model.Sz = Model.firstEz;
     }
 };
 
@@ -114,8 +122,16 @@ Model.makeModel = function(renderer) {
     var rightleg = model.getPart("rightLeg");
     rightleg.clear();
     for (var i in Model.save) {
-        var block = model.getPart("body");
-        block.addBox(Model.save[i][0] * Sqaure * Model.xDir, Model.save[i][1] * Sqaure * Model.yDir, Model.save[i][2] * Sqaure * Model.zDir, 1 * Sqaure, 1 * Sqaure, 1 * Sqaure)
+        if (Model.isChecked) {
+            var block = model.getPart("body");
+            if (Model.firstSx !== Model.save[i][0] && Model.firstSy !== Model.save[i][1] && Model.firstSz !== Model.save[i][2]) {}
+            block.addBox(Model.save[i][0] * Sqaure * Model.xDir, Model.save[i][1] * Sqaure * Model.yDir, Model.save[i][2] * Sqaure * Model.zDir, 1 * Sqaure, 1 * Sqaure, 1 * Sqaure);
+            if (Model.firstEx !== Model.save[i][0] && Model.firstEy !== Model.save[i][1] && Model.firstEz !== Model.save[i][2]) {}
+            block.addBox(Model.save[i][0] * Sqaure * Model.xDir, Model.save[i][1] * Sqaure * Model.yDir, Model.save[i][2] * Sqaure * Model.zDir, 1 * Sqaure, 1 * Sqaure, 1 * Sqaure);
+        } else if (!Model.isChecked) {
+            var block = model.getPart("body");
+            block.addBox(Model.save[i][0] * Sqaure * Model.xDir, Model.save[i][1] * Sqaure * Model.yDir, Model.save[i][2] * Sqaure * Model.zDir, 1 * Sqaure, 1 * Sqaure, 1 * Sqaure);
+        }
     }
 };
 Model.makeModel(Model.entityRender);
@@ -149,7 +165,7 @@ function dp(pixel) {
     return Math.ceil(pixel * density);
 }
 
-function TypeDialog(Arr) {
+function TypeDialog(arr) {
     ctx.runOnUiThread(new java.lang.Runnable({
         run: function() {
             try {
@@ -162,17 +178,22 @@ function TypeDialog(Arr) {
 
                 var bodyPart = ["head", "body", "leftarm", "rightarm", "leftleg", "rightleg"];
 
-                editText = new android.widget.EditText(ctx);
+                var editText = new android.widget.EditText(ctx);
                 editText.setHint("variableName");
                 editText.setText("block");
                 editText.setTextColor(WHITE);
                 L.addView(editText);
 
-                Bs = new android.widget.EditText(ctx);
+                var Bs = new android.widget.EditText(ctx);
                 Bs.setHint("확대율[x1]");
                 Bs.setText("1");
                 Bs.setTextColor(WHITE);
                 L.addView(Bs);
+
+                var checkBox = new android.widget.CheckBox(ctx);
+                checkBox.setText("터치한 블럭X");
+                checkBox.setChecked(Model.isChecked);
+                L.addView(checkBox);
 
                 var spinner = new android.widget.Spinner(ctx);
                 var adapter = new android.widget.ArrayAdapter(ctx, android.R.layout.simple_list_item_1, bodyPart);
@@ -188,8 +209,8 @@ function TypeDialog(Arr) {
 
                 adb.setPositiveButton("확인", new android.content.DialogInterface.OnClickListener({
                     onClick: function(d, w) {
-                        Sqaure = Bs.getText().toString();
-                        Model.set(editText.getText().toString(), Arr);
+                        Model.isChecked = checkBox.isChecked();
+                        Model.set(arr, editText.getText().toString(), Bs.getText().toString(), checkBox.isChecked());
                     }
                 }));
                 adb.show();
