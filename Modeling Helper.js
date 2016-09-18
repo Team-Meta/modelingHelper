@@ -4,9 +4,9 @@
  * @author Adagio
  */
 var startPoint = 0,
-    part, Type, Sqaure = 1,
+    part, Type, Sqaure = 1;
 
-    const ctx = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
+const ctx = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
 
 /**
  * Model
