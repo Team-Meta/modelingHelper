@@ -3,10 +3,26 @@
  * @since 2016.9.17
  * @author Adagio
  */
+<<<<<<< HEAD
 var part = null,
     Color = android.graphics.Color,
+=======
+var startPoint = 0,
+    part, Type, Sqaure = 1;
+    
+var AlertDialog = android.app.AlertDialog,
+    DialogInterface = android.content.DialogInterface,
+    Color = android.graphics.Color,
+    AdapterView = android.widget.AdapterView,
+    ArrayAdapter = android.widget.ArrayAdapter,
+    EditText = android.widget.EditText,
+    LinearLayout = android.widget.LinearLayout,
+    Spinner = android.widget.Spinner,
+    MainActivity = com.mojang.minecraftpe.MainActivity,
+    Runnable = java.lang.Runnable,
+>>>>>>> origin/master
     WHITE = Color.WHITE,
-    ctx = com.mojang.minecraftpe.MainActivity.currentMainActivity.get(),
+    ctx = MainActivity.currentMainActivity.get(),
     density = ctx.getResources().getDisplayMetrics().density;
 
 /**
@@ -130,35 +146,40 @@ function dp(pixel) {
     return Math.ceil(pixel * density);
 }
 
+<<<<<<< HEAD
 function TypeDialog(arr) {
     ctx.runOnUiThread(new java.lang.Runnable({
+=======
+function TypeDialog(Arr) {
+    ctx.runOnUiThread(new Runnable({
+>>>>>>> origin/master
         run: function() {
             try {
-                var adb = new android.app.AlertDialog.Builder(ctx, android.app.AlertDialog.THEME_DEVICE_DEFAULT_DARK);
+                var adb = new AlertDialog.Builder(ctx, AlertDialog.THEME_DEVICE_DEFAULT_DARK);
                 adb.setTitle("Setting");
 
-                var L = new android.widget.LinearLayout(ctx);
+                var L = new LinearLayout(ctx);
                 L.setOrientation(1);
                 L.setPadding(dp(4), dp(4), dp(4), dp(4));
 
                 var bodyPart = ["head", "body", "leftarm", "rightarm", "leftleg", "rightleg"];
 
-                editText = new android.widget.EditText(ctx);
+                editText = new EditText(ctx);
                 editText.setHint("variableName");
                 editText.setText("block");
                 editText.setTextColor(WHITE);
                 L.addView(editText);
 
-                Bs = new android.widget.EditText(ctx);
+                Bs = new EditText(ctx);
                 Bs.setHint("확대율[x1]");
                 Bs.setText("1");
                 Bs.setTextColor(WHITE);
                 L.addView(Bs);
 
-                var spinner = new android.widget.Spinner(ctx);
-                var adapter = new android.widget.ArrayAdapter(ctx, android.R.layout.simple_list_item_1, bodyPart);
+                var spinner = new Spinner(ctx);
+                var adapter = new ArrayAdapter(ctx, android.R.layout.simple_list_item_1, bodyPart);
                 spinner.setAdapter(adapter);
-                spinner.setOnItemSelectedListener(new android.widget.AdapterView.OnItemSelectedListener({
+                spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener({
                     onItemSelected: function(Parent, View, Position) {
                         part = bodyPart[Position];
                     }
@@ -167,7 +188,7 @@ function TypeDialog(arr) {
 
                 adb.setView(L);
 
-                adb.setPositiveButton("확인", new android.content.DialogInterface.OnClickListener({
+                adb.setPositiveButton("확인", new DialogInterface.OnClickListener({
                     onClick: function(d, w) {
                         Model.magnify = Bs.getText().toString();
                         Model.set(arr, editText.getText().toString());
@@ -182,19 +203,19 @@ function TypeDialog(arr) {
 }
 
 function ModelDialog(text) {
-    ctx.runOnUiThread(new java.lang.Runnable({
+    ctx.runOnUiThread(new Runnable({
         run: function() {
             try {
 
-                var adb = new android.app.AlertDialog.Builder(ctx, android.app.AlertDialog.THEME_DEVICE_DEFAULT_DARK);
+                var adb = new AlertDialog.Builder(ctx, AlertDialog.THEME_DEVICE_DEFAULT_DARK);
                 adb.setTitle("Model Source");
 
-                editText = new android.widget.EditText(ctx);
+                editText = new EditText(ctx);
                 editText.setText(text);
                 editText.setTextColor(WHITE);
                 adb.setView(editText);
 
-                adb.setPositiveButton("확인", new android.content.DialogInterface.OnClickListener({
+                adb.setPositiveButton("확인", new DialogInterface.OnClickListener({
                     onClick: function(d, w) {
 
                     }
