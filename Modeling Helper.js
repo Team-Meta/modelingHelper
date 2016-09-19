@@ -3,27 +3,19 @@
  * @since 2016.9.17
  * @author Adagio
  */
-<<<<<<< HEAD
-var part = null,
-    Color = android.graphics.Color,
-=======
-var startPoint = 0,
-    part, Type, Sqaure = 1;
-    
-var AlertDialog = android.app.AlertDialog,
-    DialogInterface = android.content.DialogInterface,
-    Color = android.graphics.Color,
-    AdapterView = android.widget.AdapterView,
-    ArrayAdapter = android.widget.ArrayAdapter,
-    EditText = android.widget.EditText,
-    LinearLayout = android.widget.LinearLayout,
-    Spinner = android.widget.Spinner,
-    MainActivity = com.mojang.minecraftpe.MainActivity,
-    Runnable = java.lang.Runnable,
->>>>>>> origin/master
-    WHITE = Color.WHITE,
-    ctx = MainActivity.currentMainActivity.get(),
-    density = ctx.getResources().getDisplayMetrics().density;
+ var AlertDialog = android.app.AlertDialog,
+     DialogInterface = android.content.DialogInterface,
+     Color = android.graphics.Color,
+     AdapterView = android.widget.AdapterView,
+     ArrayAdapter = android.widget.ArrayAdapter,
+     EditText = android.widget.EditText,
+     LinearLayout = android.widget.LinearLayout,
+     Spinner = android.widget.Spinner,
+     MainActivity = com.mojang.minecraftpe.MainActivity,
+     Runnable = java.lang.Runnable,
+     WHITE = Color.WHITE,
+     ctx = MainActivity.currentMainActivity.get(),
+     density = ctx.getResources().getDisplayMetrics().density;
 
 /**
  * Model
@@ -146,13 +138,8 @@ function dp(pixel) {
     return Math.ceil(pixel * density);
 }
 
-<<<<<<< HEAD
-function TypeDialog(arr) {
-    ctx.runOnUiThread(new java.lang.Runnable({
-=======
 function TypeDialog(Arr) {
     ctx.runOnUiThread(new Runnable({
->>>>>>> origin/master
         run: function() {
             try {
                 var adb = new AlertDialog.Builder(ctx, AlertDialog.THEME_DEVICE_DEFAULT_DARK);
